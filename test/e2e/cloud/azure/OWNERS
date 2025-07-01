@@ -1,0 +1,9 @@
+# See the OWNERS docs at https://go.k8s.io/owners
+
+approvers:
+- sig-azure-provider-maintainers
+reviewers:
+- sig-azure-provider-reviewers
+labels:
+- sig/cloud-provider
+- area/provider/azure

@@ -1,5 +1,5 @@
 /*
-Copyright 2019 The Kubernetes Authors.
+Copyright 2025 The Kubernetes Authors.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,10 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package cloud
+package azure
 
 import (
 	// ensure these packages are scanned by ginkgo for e2e tests
-	_ "k8s.io/kubernetes/test/e2e/cloud/azure"
-	_ "k8s.io/kubernetes/test/e2e/cloud/gcp"
+	_ "k8s.io/kubernetes/test/e2e/cloud/azure/apps"
+	_ "k8s.io/kubernetes/test/e2e/cloud/azure/auth"
+	_ "k8s.io/kubernetes/test/e2e/cloud/azure/network"
+	_ "k8s.io/kubernetes/test/e2e/cloud/azure/node"
+	_ "k8s.io/kubernetes/test/e2e/cloud/azure/storage"
 )
