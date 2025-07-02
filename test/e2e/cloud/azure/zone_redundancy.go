@@ -19,7 +19,6 @@ package azure
 import (
 	"context"
 
-	"k8s.io/kubernetes/test/e2e/feature"
 	"k8s.io/kubernetes/test/e2e/framework"
 	e2enode "k8s.io/kubernetes/test/e2e/framework/node"
 	e2eskipper "k8s.io/kubernetes/test/e2e/framework/skipper"
@@ -28,7 +27,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 )
 
-var _ = SIGDescribe("Azure Zone Redundancy", feature.AzureZones, func() {
+var _ = SIGDescribe("Azure Zone Redundancy", func() {
 	f := framework.NewDefaultFramework("azure-zone-redundancy")
 	f.NamespacePodSecurityLevel = admissionapi.LevelPrivileged
 
@@ -38,7 +37,7 @@ var _ = SIGDescribe("Azure Zone Redundancy", feature.AzureZones, func() {
 		// e2eskipper.SkipUnlessMultiZone()
 	})
 
-	f.It("should distribute nodes across availability zones", feature.AzureZones, func(ctx context.Context) {
+	f.It("should distribute nodes across availability zones", func(ctx context.Context) {
 		framework.Logf("Testing Azure availability zone distribution")
 
 		// Get all nodes
@@ -70,7 +69,7 @@ var _ = SIGDescribe("Azure Zone Redundancy", feature.AzureZones, func() {
 		framework.Logf("Azure zone distribution test completed")
 	})
 
-	f.It("should support zone-aware persistent volume provisioning", feature.AzureZones, func(ctx context.Context) {
+	f.It("should support zone-aware persistent volume provisioning", func(ctx context.Context) {
 		framework.Logf("Testing zone-aware persistent volume provisioning")
 
 		// TODO: Implement zone-aware PV testing:
@@ -82,7 +81,7 @@ var _ = SIGDescribe("Azure Zone Redundancy", feature.AzureZones, func() {
 		framework.Logf("Zone-aware PV provisioning test completed")
 	})
 
-	f.It("should handle zone failures gracefully", feature.AzureZones, func(ctx context.Context) {
+	f.It("should handle zone failures gracefully", func(ctx context.Context) {
 		framework.Logf("Testing zone failure handling")
 
 		// TODO: Implement zone failure simulation:
@@ -94,7 +93,7 @@ var _ = SIGDescribe("Azure Zone Redundancy", feature.AzureZones, func() {
 		framework.Logf("Zone failure handling test completed")
 	})
 
-	f.It("should support zone-specific node pools", feature.AzureZones, func(ctx context.Context) {
+	f.It("should support zone-specific node pools", func(ctx context.Context) {
 		framework.Logf("Testing zone-specific node pools")
 
 		// TODO: Implement zone-specific node pool testing:

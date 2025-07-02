@@ -18,9 +18,7 @@ package azure
 
 import (
 	"context"
-	"fmt"
 
-	"k8s.io/kubernetes/test/e2e/feature"
 	"k8s.io/kubernetes/test/e2e/framework"
 	e2enode "k8s.io/kubernetes/test/e2e/framework/node"
 	e2eskipper "k8s.io/kubernetes/test/e2e/framework/skipper"
@@ -29,7 +27,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 )
 
-var _ = SIGDescribe("AKS node pools", feature.NodePool, func() {
+var _ = SIGDescribe("AKS node pools", func() {
 
 	f := framework.NewDefaultFramework("aks-node-pools")
 	f.NamespacePodSecurityLevel = admissionapi.LevelPrivileged
@@ -38,12 +36,12 @@ var _ = SIGDescribe("AKS node pools", feature.NodePool, func() {
 		e2eskipper.SkipUnlessProviderIs("azure")
 	})
 
-	f.It("should create a cluster with multiple node pools", feature.NodePool, func(ctx context.Context) {
+	f.It("should create a cluster with multiple node pools", func(ctx context.Context) {
 		framework.Logf("Start create AKS node pool test")
 		testCreateDeleteNodePool(ctx, f, "test-pool")
 	})
 
-	f.It("should scale node pools up and down", feature.NodePool, func(ctx context.Context) {
+	f.It("should scale node pools up and down", func(ctx context.Context) {
 		framework.Logf("Start scale AKS node pool test")
 		testScaleNodePool(ctx, f, "scale-pool")
 	})

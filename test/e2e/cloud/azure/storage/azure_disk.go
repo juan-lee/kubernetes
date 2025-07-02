@@ -20,15 +20,15 @@ import (
 	"context"
 
 	v1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/uuid"
 	"k8s.io/kubernetes/test/e2e/feature"
 	"k8s.io/kubernetes/test/e2e/framework"
 	e2epod "k8s.io/kubernetes/test/e2e/framework/pod"
-	e2epv "k8s.io/kubernetes/test/e2e/framework/pv"
 	e2eskipper "k8s.io/kubernetes/test/e2e/framework/skipper"
-	e2evolume "k8s.io/kubernetes/test/e2e/framework/volume"
 	admissionapi "k8s.io/pod-security-admission/api"
+	imageutils "k8s.io/kubernetes/test/utils/image"
 
 	"github.com/onsi/ginkgo/v2"
 )
@@ -55,17 +55,18 @@ var _ = SIGDescribe("Azure Disk CSI", feature.Volumes, func() {
 				AccessModes: []v1.PersistentVolumeAccessMode{v1.ReadWriteOnce},
 				Resources: v1.VolumeResourceRequirements{
 					Requests: v1.ResourceList{
-						v1.ResourceStorage: e2evolume.MinVolumeSize,
+						v1.ResourceStorage: resource.MustParse("1Gi"),
 					},
 				},
 				StorageClassName: &[]string{"managed-csi"}[0], // Azure Disk CSI storage class
 			},
 		}
 
-		pvc = e2epv.MakePersistentVolumeClaim(pvc, f.Namespace.Name)
+		pvc, err := f.ClientSet.CoreV1().PersistentVolumeClaims(f.Namespace.Name).Create(ctx, pvc, metav1.CreateOptions{})
+		framework.ExpectNoError(err)
 		defer func() {
 			framework.Logf("Cleaning up Azure Disk PVC")
-			e2epv.DeletePersistentVolumeClaim(ctx, f.ClientSet, pvc.Name, f.Namespace.Name)
+			f.ClientSet.CoreV1().PersistentVolumeClaims(f.Namespace.Name).Delete(ctx, pvc.Name, metav1.DeleteOptions{})
 		}()
 
 		// Create a pod to use the PVC
@@ -79,7 +80,7 @@ var _ = SIGDescribe("Azure Disk CSI", feature.Volumes, func() {
 				Containers: []v1.Container{
 					{
 						Name:  "azure-disk-container",
-						Image: framework.BusyBoxImage,
+						Image: imageutils.GetE2EImage(imageutils.BusyBox),
 						Command: []string{
 							"/bin/sh",
 							"-c",
@@ -117,7 +118,7 @@ var _ = SIGDescribe("Azure Disk CSI", feature.Volumes, func() {
 		framework.Logf("Azure Disk CSI volume provisioning test completed")
 	})
 
-	f.It("should support Azure Disk volume expansion", feature.ExpandInUsePersistentVolumes, func(ctx context.Context) {
+	f.It("should support Azure Disk volume expansion", func(ctx context.Context) {
 		framework.Logf("Testing Azure Disk volume expansion")
 
 		// TODO: Implement volume expansion testing:

@@ -66,15 +66,18 @@ var _ = SIGDescribe("Azure Load Balancer", feature.LoadBalancer, func() {
 		}
 
 		// Create the service
-		service := e2eservice.CreateServiceSpec(ctx, f.ClientSet, f.Namespace.Name, svc)
+		service, err := f.ClientSet.CoreV1().Services(f.Namespace.Name).Create(ctx, svc, metav1.CreateOptions{})
+		framework.ExpectNoError(err)
 		defer func() {
 			framework.Logf("Cleaning up Azure Load Balancer service")
-			e2eservice.DeleteService(ctx, f.ClientSet, f.Namespace.Name, service.Name)
+			f.ClientSet.CoreV1().Services(f.Namespace.Name).Delete(ctx, service.Name, metav1.DeleteOptions{})
 		}()
 
 		// Wait for Azure Load Balancer to be provisioned
 		framework.Logf("Waiting for Azure Load Balancer to be provisioned")
-		e2eservice.WaitForServiceExternalIP(ctx, f.ClientSet, f.Namespace.Name, service.Name)
+		jig := e2eservice.NewTestJig(f.ClientSet, f.Namespace.Name, service.Name)
+		_, err = jig.WaitForLoadBalancer(ctx, 5*time.Minute)
+		framework.ExpectNoError(err)
 
 		// Verify the load balancer is accessible
 		framework.Logf("Azure Load Balancer provisioning test completed")
@@ -107,15 +110,18 @@ var _ = SIGDescribe("Azure Load Balancer", feature.LoadBalancer, func() {
 		}
 
 		// Create the internal load balancer service
-		service := e2eservice.CreateServiceSpec(ctx, f.ClientSet, f.Namespace.Name, svc)
+		service, err := f.ClientSet.CoreV1().Services(f.Namespace.Name).Create(ctx, svc, metav1.CreateOptions{})
+		framework.ExpectNoError(err)
 		defer func() {
 			framework.Logf("Cleaning up Azure Internal Load Balancer service")
-			e2eservice.DeleteService(ctx, f.ClientSet, f.Namespace.Name, service.Name)
+			f.ClientSet.CoreV1().Services(f.Namespace.Name).Delete(ctx, service.Name, metav1.DeleteOptions{})
 		}()
 
 		// Wait for internal load balancer to be provisioned
 		framework.Logf("Waiting for Azure Internal Load Balancer to be provisioned")
-		e2eservice.WaitForServiceLoadBalancerIngress(ctx, f.ClientSet, f.Namespace.Name, service.Name, 5*time.Minute)
+		jig := e2eservice.NewTestJig(f.ClientSet, f.Namespace.Name, service.Name)
+		_, err = jig.WaitForLoadBalancer(ctx, 5*time.Minute)
+		framework.ExpectNoError(err)
 
 		framework.Logf("Azure Internal Load Balancer test completed")
 	})

@@ -19,7 +19,6 @@ package node
 import (
 	"context"
 
-	"k8s.io/kubernetes/test/e2e/feature"
 	"k8s.io/kubernetes/test/e2e/framework"
 	e2enode "k8s.io/kubernetes/test/e2e/framework/node"
 	e2eskipper "k8s.io/kubernetes/test/e2e/framework/skipper"
@@ -28,7 +27,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 )
 
-var _ = SIGDescribe("Azure VM Scale Sets", feature.NodeManagement, func() {
+var _ = SIGDescribe("Azure VM Scale Sets", func() {
 	f := framework.NewDefaultFramework("azure-vmss")
 	f.NamespacePodSecurityLevel = admissionapi.LevelPrivileged
 
@@ -38,7 +37,7 @@ var _ = SIGDescribe("Azure VM Scale Sets", feature.NodeManagement, func() {
 		// e2eskipper.SkipUnlessVMSSEnabled()
 	})
 
-	f.It("should support node operations on VMSS", feature.NodeManagement, func(ctx context.Context) {
+	f.It("should support node operations on VMSS", func(ctx context.Context) {
 		framework.Logf("Testing Azure VMSS node operations")
 
 		// Get current nodes
@@ -55,7 +54,7 @@ var _ = SIGDescribe("Azure VM Scale Sets", feature.NodeManagement, func() {
 		framework.Logf("Azure VMSS node operations test completed")
 	})
 
-	f.It("should handle VMSS instance updates gracefully", feature.NodeManagement, func(ctx context.Context) {
+	f.It("should handle VMSS instance updates gracefully", func(ctx context.Context) {
 		framework.Logf("Testing Azure VMSS instance updates")
 
 		// TODO: Implement VMSS update testing:
@@ -66,7 +65,7 @@ var _ = SIGDescribe("Azure VM Scale Sets", feature.NodeManagement, func() {
 		framework.Logf("Azure VMSS instance update test completed")
 	})
 
-	f.It("should support mixed instance types in VMSS", feature.NodeManagement, func(ctx context.Context) {
+	f.It("should support mixed instance types in VMSS", func(ctx context.Context) {
 		framework.Logf("Testing Azure VMSS with mixed instance types")
 
 		// TODO: Implement mixed instance type testing:

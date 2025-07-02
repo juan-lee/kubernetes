@@ -19,7 +19,6 @@ package auth
 import (
 	"context"
 
-	"k8s.io/kubernetes/test/e2e/feature"
 	"k8s.io/kubernetes/test/e2e/framework"
 	e2eskipper "k8s.io/kubernetes/test/e2e/framework/skipper"
 	admissionapi "k8s.io/pod-security-admission/api"
@@ -27,7 +26,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 )
 
-var _ = SIGDescribe("Azure AD Integration", feature.AzureAD, func() {
+var _ = SIGDescribe("Azure AD Integration", func() {
 	f := framework.NewDefaultFramework("azure-ad-integration")
 	f.NamespacePodSecurityLevel = admissionapi.LevelPrivileged
 
@@ -37,7 +36,7 @@ var _ = SIGDescribe("Azure AD Integration", feature.AzureAD, func() {
 		// e2eskipper.SkipUnlessAzureADEnabled()
 	})
 
-	f.It("should authenticate with Azure AD", feature.AzureAD, func(ctx context.Context) {
+	f.It("should authenticate with Azure AD", func(ctx context.Context) {
 		framework.Logf("Testing Azure AD authentication integration")
 		
 		// TODO: Implement Azure AD authentication tests:
@@ -49,7 +48,7 @@ var _ = SIGDescribe("Azure AD Integration", feature.AzureAD, func() {
 		framework.Logf("Azure AD authentication test completed")
 	})
 
-	f.It("should support Azure AD group-based RBAC", feature.AzureAD, func(ctx context.Context) {
+	f.It("should support Azure AD group-based RBAC", func(ctx context.Context) {
 		framework.Logf("Testing Azure AD group-based RBAC")
 		
 		// TODO: Implement group-based RBAC tests:
@@ -60,7 +59,7 @@ var _ = SIGDescribe("Azure AD Integration", feature.AzureAD, func() {
 		framework.Logf("Azure AD group-based RBAC test completed")
 	})
 
-	f.It("should integrate with Azure Key Vault for secrets", feature.AzureKeyVault, func(ctx context.Context) {
+	f.It("should integrate with Azure Key Vault for secrets", func(ctx context.Context) {
 		framework.Logf("Testing Azure Key Vault integration")
 		
 		// TODO: Implement Key Vault integration tests:

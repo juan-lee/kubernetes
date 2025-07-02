@@ -16,7 +16,7 @@ limitations under the License.
 
 package storage
 
-import "k8s.io/kubernetes/test/e2e/cloud/azure"
+import "k8s.io/kubernetes/test/e2e/framework"
 
 // SIGDescribe annotates the test with the SIG label.
-var SIGDescribe = azure.SIGDescribe
+var SIGDescribe = framework.SIGDescribe("cloud-provider-azure")

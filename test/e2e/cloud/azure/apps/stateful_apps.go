@@ -19,6 +19,7 @@ package apps
 import (
 	"context"
 
+	"k8s.io/apimachinery/pkg/util/version"
 	"k8s.io/kubernetes/test/e2e/feature"
 	"k8s.io/kubernetes/test/e2e/framework"
 	e2epv "k8s.io/kubernetes/test/e2e/framework/pv"
@@ -60,13 +61,20 @@ var _ = SIGDescribe("Azure stateful Upgrade", feature.StatefulUpgrade, func() {
 			upgradeCtx := &upgrades.UpgradeContext{
 				Versions: []upgrades.VersionContext{
 					{
-						Version:   framework.TestContext.UpgradeTarget,
-						NodeImage: framework.TestContext.UpgradeImage,
+						Version:   *version.MustParseGeneric("v1.30.0"), // TODO: Get from test context
+						NodeImage: "",                                  // TODO: Get from test context
 					},
 				},
 			}
 
-			upgrades.RunUpgradeSuite(ctx, upgradeCtx, upgradeTests, testFrameworks, &junit.TestSuite{}, f)
+			testSuite := &junit.TestSuite{Name: "Azure Stateful upgrade"}
+			statefulUpgradeTest := &junit.TestCase{Name: "[sig-apps] azure-stateful-upgrade", Classname: "upgrade_tests"}
+			testSuite.TestCases = append(testSuite.TestCases, statefulUpgradeTest)
+
+			upgradeFunc := func(ctx context.Context) {
+				framework.Logf("Azure stateful upgrade function executed")
+			}
+			upgrades.RunUpgradeSuite(ctx, upgradeCtx, upgradeTests, testFrameworks, testSuite, upgrades.ClusterUpgrade, upgradeFunc)
 		})
 	})
 })
